@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1f4b">
+<title>Awaaz Badlo | Hindi Dubbing Studio | Video Ko Hindi Mein Dub Karo</title>
+<meta name="description" content="Video ka link daalo, wahi awaaz mein Hindi dubbing paao.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1b1f4b;
+    --paper: #eef0ff;
+    --card: #ffffff;
+    --accent: #f5a524;
+    --accent-ink: #3a2500;
+    --muted: #5a5f8a;
+    --line: #d5d9f5;
+    --bad: #c93636;
+    --good: #1f8a5b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef0ff;
+      --paper: #12142e;
+      --card: #1c1f45;
+      --muted: #a4a9d6;
+      --line: #32366b;
+      --bad: #ff7b7b;
+      --good: #5fd6a0;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Hind", system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+    padding: env(safe-area-inset-top, 0px) 16px env(safe-area-inset-bottom, 0px);
+    min-height: 100vh;
+  }
+  main { max-width: 520px; margin: 0 auto; padding: 28px 0 40px; }
+  h1 {
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: 2.6rem;
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+  .sub { font-family: "Baloo 2", sans-serif; font-weight: 600; font-size: 1.15rem; color: var(--muted); margin: 4px 0 0; }
+  .tag { margin: 14px 0 22px; color: var(--muted); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+  }
+  label { display: block; font-weight: 600; margin: 0 0 6px; }
+  input, select {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 13px 14px;
+    margin-bottom: 16px;
+  }
+  input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; gap: 12px; }
+  .row > div { flex: 1; min-width: 0; }
+  button#go {
+    width: 100%;
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    padding: 14px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    cursor: pointer;
+  }
+  button#go:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  #progress { display: none; margin-top: 18px; text-align: center; }
+  .bars { display: flex; align-items: center; justify-content: center; gap: 5px; height: 56px; }
+  .bars i {
+    display: block; width: 6px; height: 14px; border-radius: 3px; background: var(--accent);
+    animation: wave 1s ease-in-out infinite;
+  }
+  .bars i:nth-child(2) { animation-delay: .1s; }
+  .bars i:nth-child(3) { animation-delay: .2s; }
+  .bars i:nth-child(4) { animation-delay: .3s; }
+  .bars i:nth-child(5) { animation-delay: .4s; }
+  .bars i:nth-child(6) { animation-delay: .5s; }
+  .bars i:nth-child(7) { animation-delay: .6s; }
+  .bars i:nth-child(8) { animation-delay: .7s; }
+  @keyframes wave { 0%,100% { height: 12px; } 50% { height: 52px; } }
+  @media (prefers-reduced-motion: reduce) { .bars i { animation: none; height: 30px; } }
+  #status { font-weight: 600; margin: 6px 0 0; }
+  #hint { color: var(--muted); font-size: .92rem; margin: 4px 0 0; }
+
+  #error { display: none; margin-top: 16px; color: var(--bad); font-weight: 600; word-break: break-word; }
+  #result { display: none; margin-top: 18px; }
+  #result h2 { font-family: "Baloo 2", sans-serif; font-size: 1.3rem; margin: 0 0 10px; color: var(--good); }
+  audio, video { width: 100%; margin-bottom: 12px; border-radius: 12px; }
+  .dl {
+    display: block; text-align: center; text-decoration: none; font-weight: 600;
+    padding: 12px; border-radius: 12px; border: 1.5px solid var(--ink); color: var(--ink); margin-bottom: 10px;
+  }
+  .note { color: var(--muted); font-size: .88rem; margin-top: 18px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Awaaz Badlo</h1>
+  <p class="sub">Hindi Dubbing Studio</p>
+  <p class="tag">Video ka link daalo. Wahi awaaz mein Hindi dubbing taiyaar.</p>
+
+  <section class="card">
+    <label for="url">Video / audio ka link</label>
+    <input id="url" type="url" inputmode="url" placeholder="https://..." autocomplete="off">
+
+    <div class="row">
+      <div>
+        <label for="lang">Kis bhasha mein?</label>
+        <select id="lang">
+          <option value="hi" selected>Hindi</option>
+          <option value="en">English</option>
+          <option value="pa">Punjabi</option>
+          <option value="bn">Bengali</option>
+          <option value="mr">Marathi</option>
+          <option value="gu">Gujarati</option>
+          <option value="ta">Tamil</option>
+          <option value="te">Telugu</option>
+          <option value="kn">Kannada</option>
+          <option value="ml">Malayalam</option>
+          <option value="ur">Urdu</option>
+        </select>
+      </div>
+      <div>
+        <label for="src">Original bhasha</label>
+        <select id="src">
+          <option value="auto" selected>Apne aap pehchano</option>
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="ar">Arabic</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="go" type="button">Dub karo</button>
+
+    <div id="progress" aria-live="polite">
+      <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p id="status">Shuru ho raha hai...</p>
+      <p id="hint">Isme kuch minute lag sakte hain. Page band mat karna.</p>
+    </div>
+
+    <p id="error" role="alert"></p>
+
+    <div id="result">
+      <h2>Dubbing taiyaar hai</h2>
+      <div id="files"></div>
+    </div>
+  </section>
+
+  <p class="note">Download link kuch der baad expire ho jata hai, isliye dub ko turant save kar lo.</p>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var go = $("go"), progress = $("progress"), statusEl = $("status"),
+      errorEl = $("error"), result = $("result"), filesEl = $("files");
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function showError(msg) {
+    progress.style.display = "none";
+    errorEl.textContent = msg;
+    errorEl.style.display = "block";
+    go.disabled = false;
+  }
+
+  async function api(payload) {
+    var r = await fetch("/api/dub", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    var data;
+    try { data = await r.json(); } catch (e) { data = { error: "Server se galat jawab aaya." }; }
+    if (!r.ok) throw new Error(data.error || "Kuch gadbad ho gayi.");
+    return data;
+  }
+
+  function collectUrls(obj, out, prefix) {
+    Object.keys(obj || {}).forEach(function (k) {
+      var v = obj[k];
+      if (typeof v === "string" && /^https?:\/\//i.test(v)) out.push({ name: prefix + k, url: v });
+      else if (v && typeof v === "object") collectUrls(v, out, prefix + k + " ");
+    });
+    return out;
+  }
+
+  function show(outputs) {
+    filesEl.innerHTML = "";
+    var list = collectUrls(outputs, [], "");
+    if (!list.length) {
+      showError("Dubbing ho gayi, par download link nahi mila. Dobara try karo.");
+      return;
+    }
+    list.forEach(function (f) {
+      var label = f.name.replace(/_/g, " ");
+      var isVideo = /video/i.test(f.name);
+      var player = document.createElement(isVideo ? "video" : "audio");
+      player.controls = true;
+      player.preload = "metadata";
+      player.src = f.url;
+      filesEl.appendChild(player);
+      var a = document.createElement("a");
+      a.className = "dl";
+      a.href = f.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = "Download: " + label;
+      filesEl.appendChild(a);
+    });
+    progress.style.display = "none";
+    result.style.display = "block";
+    go.disabled = false;
+  }
+
+  go.addEventListener("click", async function () {
+    var url = $("url").value.trim();
+    errorEl.style.display = "none";
+    result.style.display = "none";
+    if (!/^https?:\/\//i.test(url)) {
+      showError("Pehle sahi link daalo (https:// se shuru hone wala).");
+      return;
+    }
+    go.disabled = true;
+    progress.style.display = "block";
+    statusEl.textContent = "Video bheja ja raha hai...";
+
+    try {
+      var lang = $("lang").value;
+      var start = await api({ action: "start", url: url, source_lang: $("src").value });
+      var pid = start.project_id;
+      var lid = null;
+      var fails = 0;
+      var began = Date.now();
+
+      while (Date.now() - began < 25 * 60 * 1000) {
+        await sleep(5000);
+        var s;
+        try {
+          s = await api({ action: "check", project_id: pid, language_id: lid, lang: lang });
+          fails = 0;
+        } catch (e) {
+          fails += 1;
+          if (fails >= 4) throw e;
+          continue;
+        }
+        if (s.stage === "failed") throw new Error(s.error || "Dubbing fail ho gayi.");
+        if (s.stage === "preparing") statusEl.textContent = "Awaaz aur script samjhi ja rahi hai...";
+        if (s.stage === "dubbing") {
+          lid = s.language_id || lid;
+          statusEl.textContent = "Dubbing ban rahi hai...";
+        }
+        if (s.stage === "done") { show(s.outputs); return; }
+      }
+      throw new Error("Bahut der lag gayi. Thodi der baad dobara try karo.");
+    } catch (e) {
+      showError(e.message || "Kuch gadbad ho gayi.");
+    }
+  });
+})();
+</script>
+</body>
+</html>

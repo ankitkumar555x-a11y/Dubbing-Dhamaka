@@ -126,6 +126,9 @@
     <label for="url">Video / audio ka link</label>
     <input id="url" type="url" inputmode="url" placeholder="https://..." autocomplete="off">
 
+    <label for="file">Ya phone se video chuno</label>
+    <input id="file" type="file" accept="video/*,audio/*">
+
     <div class="row">
       <div>
         <label for="lang">Kis bhasha mein?</label>
@@ -245,8 +248,9 @@
     var url = $("url").value.trim();
     errorEl.style.display = "none";
     result.style.display = "none";
-    if (!/^https?:\/\//i.test(url)) {
-      showError("Pehle sahi link daalo (https:// se shuru hone wala).");
+    var file = $("file").files[0];
+    if (!file && !/^https?:\/\//i.test(url)) {
+      showError("Pehle link daalo ya phone se video chuno.");
       return;
     }
     go.disabled = true;
@@ -255,6 +259,19 @@
 
     try {
       var lang = $("lang").value;
+      if (file) {
+        statusEl.textContent = "Video upload ho raha hai... 0%";
+        var mod = await import("https://esm.sh/@vercel/blob/client");
+        var blob = await mod.upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/dub",
+          onUploadProgress: function (p) {
+            statusEl.textContent = "Video upload ho raha hai... " + Math.round(p.percentage) + "%";
+          }
+        });
+        url = blob.url;
+        statusEl.textContent = "Video bheja ja raha hai...";
+      }
       var start = await api({ action: "start", url: url, source_lang: $("src").value });
       var pid = start.project_id;
       var lid = null;

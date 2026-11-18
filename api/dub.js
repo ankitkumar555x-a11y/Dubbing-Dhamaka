@@ -46,6 +46,22 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // Phone se video upload (Vercel Blob)
+    if (body.type === "blob.generate-client-token" || body.type === "blob.upload-completed") {
+      const { handleUpload } = await import("@vercel/blob/client");
+      const out = await handleUpload({
+        body,
+        request: req,
+        onBeforeGenerateToken: async () => ({
+          allowedContentTypes: ["video/*", "audio/*"],
+          maximumSizeInBytes: 300 * 1024 * 1024,
+          addRandomSuffix: true,
+        }),
+        onUploadCompleted: async () => {},
+      });
+      return res.status(200).json(out);
+    }
+
     // Step 1: dubbing project shuru karo
     if (body.action === "start") {
       const url = String(body.url || "").trim();
@@ -55,6 +71,7 @@ module.exports = async (req, res) => {
       const form = new FormData();
       form.append("source_url", url);
       form.append("reference", "Awaaz Badlo");
+      form.append("model_id", "dubbing_v1");
       if (body.source_lang && body.source_lang !== "auto") {
         form.append("source_language", String(body.source_lang));
       }
